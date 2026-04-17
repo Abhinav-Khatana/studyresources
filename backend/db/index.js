@@ -4,15 +4,39 @@ dotenv.config();
 
 const { Pool } = pg;
 
+function resolveSslConfig() {
+  const sslMode = String(process.env.DB_SSL || process.env.PGSSLMODE || "").toLowerCase();
+  if (!sslMode || ["false", "0", "disable"].includes(sslMode)) return false;
+  return { rejectUnauthorized: !["allow", "prefer", "require", "no-verify"].includes(sslMode) };
+}
+
+function buildPoolConfig() {
+  if (process.env.DATABASE_URL) {
+    return {
+      connectionString: process.env.DATABASE_URL,
+      ssl: resolveSslConfig(),
+      max: parseInt(process.env.DB_POOL_MAX || "10", 10),
+      idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT_MS || "30000", 10),
+      connectionTimeoutMillis: parseInt(process.env.DB_CONNECT_TIMEOUT_MS || "10000", 10),
+    };
+  }
+
+  return {
+    host: process.env.DB_HOST || "localhost",
+    port: parseInt(process.env.DB_PORT || "5432", 10),
+    database: process.env.DB_NAME || "studyhub",
+    user: process.env.DB_USER || "postgres",
+    password: process.env.DB_PASSWORD || "",
+    ssl: resolveSslConfig(),
+    max: parseInt(process.env.DB_POOL_MAX || "10", 10),
+    idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT_MS || "30000", 10),
+    connectionTimeoutMillis: parseInt(process.env.DB_CONNECT_TIMEOUT_MS || "10000", 10),
+  };
+}
+
 // ── Connection pool ───────────────────────────────────────────────────────────
 // All routes import { query } from here. If you ever swap DBs, only this file changes.
-const pool = new Pool({
-  host:     process.env.DB_HOST     || "localhost",
-  port:     parseInt(process.env.DB_PORT || "5432"),
-  database: process.env.DB_NAME     || "studyhub",
-  user:     process.env.DB_USER     || "postgres",
-  password: process.env.DB_PASSWORD || "",
-});
+const pool = new Pool(buildPoolConfig());
 
 pool.on("error", (err) => {
   console.error("Unexpected PostgreSQL error:", err.message);

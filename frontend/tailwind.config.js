@@ -4,36 +4,48 @@ export default {
   theme: {
     extend: {
       colors: {
+        // ── New Brand: Electric Indigo → Cyan (modern SaaS palette) ──
         brand: {
-          50:  "#f5f3ff",
-          100: "#ede9fe",
-          200: "#ddd6fe",
-          300: "#c4b5fd",
-          400: "#a78bfa",
-          500: "#8b5cf6",
-          600: "#7c3aed",
-          700: "#6d28d9",
-          800: "#5b21b6",
-          900: "#4c1d95",
+          50:  "#f0f9ff",
+          100: "#e0f2fe",
+          200: "#bae6fd",
+          300: "#7dd3fc",
+          400: "#38bdf8",
+          500: "#0ea5e9",
+          600: "#0284c7",
+          700: "#0369a1",
+          800: "#075985",
+          900: "#0c4a6e",
         },
+        // ── Accent: Emerald for success/highlights ──
+        accent: {
+          400: "#34d399",
+          500: "#10b981",
+          600: "#059669",
+        },
+        // ── Surface: Ultra-dark charcoal ──
         surface: {
-          DEFAULT: "#0f0f13",
-          card:    "#16161e",
-          border:  "#2a2a38",
-          hover:   "#1e1e2a",
+          DEFAULT: "#09090b",
+          card:    "#111115",
+          border:  "#1e1e24",
+          hover:   "#16161c",
+          muted:   "#27272a",
         },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        sans: ["Manrope", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "Fira Code", "monospace"],
       },
       animation: {
-        "fade-in":  "fadeIn 0.4s ease-out",
-        "slide-up": "slideUp 0.4s ease-out",
+        "fade-in":   "fadeIn 0.4s ease-out",
+        "slide-up":  "slideUp 0.4s ease-out",
+        "slide-in":  "slideIn 0.3s ease-out",
+        "pulse-slow":"pulse 3s ease-in-out infinite",
       },
       keyframes: {
         fadeIn:  { from: { opacity: 0 }, to: { opacity: 1 } },
         slideUp: { from: { opacity: 0, transform: "translateY(16px)" }, to: { opacity: 1, transform: "translateY(0)" } },
+        slideIn: { from: { opacity: 0, transform: "translateX(-12px)" }, to: { opacity: 1, transform: "translateX(0)" } },
       },
     },
   },

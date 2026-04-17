@@ -12,9 +12,17 @@ function getColor(minutes) {
   return "bg-brand-400";
 }
 
+function toLocalDateKey(date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 export default function Heatmap({ studyLog = {} }) {
   const { weeks, monthLabels } = useMemo(() => {
     const today = new Date();
+    today.setHours(0, 0, 0, 0);
     const start = new Date(today);
     start.setDate(start.getDate() - 7 * 26 + 1);
     start.setDate(start.getDate() - start.getDay());
@@ -27,7 +35,7 @@ export default function Heatmap({ studyLog = {} }) {
     while (current <= today) {
       const week = [];
       for (let d = 0; d < 7; d++) {
-        const dateStr = current.toISOString().split("T")[0];
+        const dateStr = toLocalDateKey(current);
         if (current.getDay() === 0) {
           const month = current.getMonth();
           if (month !== lastMonth) {

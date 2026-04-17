@@ -11,7 +11,9 @@ router.get("/", authenticate, async (req, res) => {
       `SELECT r.*, b.created_at AS bookmarked_at,
               u.title AS unit_title, u.unit_number,
               s.name AS subject_name, s.id AS subject_id, s.icon AS subject_icon,
-              COALESCE(SUM(v.vote), 0)::int AS vote_score
+              COALESCE(SUM(v.vote), 0)::int AS vote_score,
+              COUNT(CASE WHEN v.vote = 1 THEN 1 END)::int AS upvotes,
+              COUNT(CASE WHEN v.vote = -1 THEN 1 END)::int AS downvotes
        FROM bookmarks b
        JOIN resources r ON r.id = b.resource_id
        JOIN units u ON u.id = r.unit_id

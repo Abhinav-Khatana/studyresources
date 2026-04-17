@@ -9,12 +9,22 @@ const TYPE_CONFIG = {
   pyqs:     { icon: ClipboardList, color: "text-amber-400", bg: "bg-amber-500/10" },
 };
 
-export default function ResourceCard({ resource, type, completed, onComplete, myVote: initialVote, bookmarked: initialBookmarked }) {
+export default function ResourceCard({
+  resource,
+  type,
+  completed,
+  onComplete,
+  onBookmarkChange,
+  myVote: initialVote,
+  bookmarked: initialBookmarked,
+}) {
   const cfg = TYPE_CONFIG[type] || TYPE_CONFIG.notes;
   const Icon = cfg.icon;
   const isLink = resource.url && resource.url !== "#";
 
   const [voteScore,  setVoteScore]  = useState(resource.vote_score || 0);
+  const [upvotes,    setUpvotes]    = useState(resource.upvotes || 0);
+  const [downvotes,  setDownvotes]  = useState(resource.downvotes || 0);
   const [myVote,     setMyVote]     = useState(initialVote || null);
   const [bookmarked, setBookmarked] = useState(initialBookmarked || false);
   const [isDone,     setIsDone]     = useState(completed);
@@ -38,6 +48,8 @@ export default function ResourceCard({ resource, type, completed, onComplete, my
     try {
       const res = await voteApi.cast(resource.id, vote);
       setVoteScore(res.data.score);
+      setUpvotes(res.data.upvotes);
+      setDownvotes(res.data.downvotes);
       setMyVote(res.data.myVote);
     } catch {}
   };
@@ -48,9 +60,11 @@ export default function ResourceCard({ resource, type, completed, onComplete, my
       if (bookmarked) {
         await bookmarkApi.remove(resource.id);
         setBookmarked(false);
+        onBookmarkChange?.(resource.id, false);
       } else {
         await bookmarkApi.add(resource.id);
         setBookmarked(true);
+        onBookmarkChange?.(resource.id, true);
       }
     } catch {}
   };
@@ -84,12 +98,12 @@ export default function ResourceCard({ resource, type, completed, onComplete, my
           <button onClick={(e) => handleVote(e, 1)}
             className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-md transition-all
               ${myVote === 1 ? "bg-green-500/20 text-green-400" : "text-gray-600 hover:text-green-400 hover:bg-green-500/10"}`}>
-            <ThumbsUp size={11} /> {resource.upvotes || 0}
+            <ThumbsUp size={11} /> {upvotes}
           </button>
           <button onClick={(e) => handleVote(e, -1)}
             className={`flex items-center gap-1 text-xs px-2 py-0.5 rounded-md transition-all
               ${myVote === -1 ? "bg-red-500/20 text-red-400" : "text-gray-600 hover:text-red-400 hover:bg-red-500/10"}`}>
-            <ThumbsDown size={11} /> {resource.downvotes || 0}
+            <ThumbsDown size={11} /> {downvotes}
           </button>
           {voteScore !== 0 && (
             <span className={`text-xs font-medium ${voteScore > 0 ? "text-green-400" : "text-red-400"}`}>

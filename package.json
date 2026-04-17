@@ -1,0 +1,19 @@
+{
+  "name": "studyhub",
+  "version": "3.0.0",
+  "description": "StudyHub — AI-powered CSE study platform",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail --names \"BACKEND,FRONTEND\" --prefix-colors \"magenta,cyan\" \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "backend": "npm run dev --prefix backend",
+    "frontend": "npm run dev --prefix frontend",
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "db:seed": "npm run db:seed --prefix backend",
+    "db:migrate": "npm run db:migrate --prefix backend",
+    "db:migrate2": "npm run db:migrate2 --prefix backend",
+    "db:migrate3": "npm run db:migrate3 --prefix backend",
+    "db:migrate4": "node backend/db/runMigration4.js"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

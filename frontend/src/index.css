@@ -1,19 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   * { box-sizing: border-box; }
-  body { @apply bg-surface text-white font-sans antialiased; min-height: 100vh; }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-surface; }
-  ::-webkit-scrollbar-thumb { @apply bg-surface-border rounded-full; }
+
+  body {
+    @apply bg-surface text-white font-sans antialiased;
+    min-height: 100vh;
+    background:
+      radial-gradient(circle at top, rgba(14,165,233,0.14), transparent 28%),
+      radial-gradient(circle at bottom left, rgba(16,185,129,0.08), transparent 22%),
+      #09090b;
+  }
+
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #09090b; }
+  ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 99px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3f3f46; }
+
+  ::selection { background: rgba(14,165,233,0.25); color: #fff; }
 }
 
 @layer components {
-  .card { @apply bg-surface-card border border-surface-border rounded-xl p-5; }
-  .btn-primary { @apply bg-brand-600 hover:bg-brand-500 text-white font-semibold px-5 py-2.5 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed; }
-  .btn-secondary { @apply bg-surface-hover border border-surface-border hover:border-brand-500 text-white font-medium px-5 py-2.5 rounded-lg transition-all duration-200; }
-  .input-field { @apply bg-surface border border-surface-border rounded-lg px-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 focus:ring-1 focus:ring-brand-500 transition-all duration-200 w-full; }
-  .badge { @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium; }
+  /* Cards */
+  .card {
+    @apply border rounded-2xl p-5;
+    background: linear-gradient(180deg, rgba(17,17,21,0.94), rgba(12,12,16,0.92));
+    border-color: rgba(255,255,255,0.06);
+    box-shadow:
+      0 20px 50px rgba(0,0,0,0.22),
+      inset 0 1px 0 rgba(255,255,255,0.03);
+    backdrop-filter: blur(18px);
+  }
+  .card-hover {
+    @apply card transition-all duration-200 hover:border-brand-600/40 hover:shadow-lg;
+    transform: translateY(0);
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply bg-brand-600 hover:bg-brand-500 text-white font-semibold px-5 py-2.5 rounded-xl
+           transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed
+           shadow-sm hover:shadow-brand-500/25 hover:shadow-md;
+    background-image: linear-gradient(135deg, #0369a1, #0ea5e9);
+  }
+  .btn-secondary {
+    @apply border hover:border-brand-500/50
+           text-gray-300 hover:text-white font-medium px-5 py-2.5 rounded-xl transition-all duration-200;
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.08);
+  }
+  .btn-ghost {
+    @apply text-gray-400 hover:text-white hover:bg-surface-hover px-3 py-2 rounded-lg transition-all duration-150;
+  }
+
+  /* Inputs — also handled on select elements */
+  .input-field {
+    @apply border rounded-xl px-4 py-2.5
+           text-white placeholder-zinc-600
+           focus:outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20
+           transition-all duration-200 w-full;
+    background: rgba(255,255,255,0.03);
+    border-color: rgba(255,255,255,0.08);
+    color-scheme: dark;
+  }
+  select.input-field {
+    background-color: #111115;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  select.input-field option {
+    background-color: #111115;
+    color: #fff;
+  }
+  input[type="date"].input-field {
+    color-scheme: dark;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold;
+  }
+  .badge-sky {
+    @apply badge bg-brand-500/15 text-brand-400 border border-brand-500/25;
+  }
+  .badge-emerald {
+    @apply badge bg-emerald-500/15 text-emerald-400 border border-emerald-500/25;
+  }
+  .badge-amber {
+    @apply badge bg-amber-500/15 text-amber-400 border border-amber-500/25;
+  }
+  .badge-red {
+    @apply badge bg-red-500/15 text-red-400 border border-red-500/25;
+  }
+
+  /* Section labels */
+  .section-label {
+    @apply text-[10px] font-bold text-zinc-600 uppercase tracking-widest;
+  }
+
+  /* Glow effects */
+  .glow-sky {
+    box-shadow: 0 0 24px rgba(14,165,233,0.25);
+  }
+  .glow-emerald {
+    box-shadow: 0 0 24px rgba(16,185,129,0.25);
+  }
 }
+
+/* ── Animations ──────────────────────────────────────────────────────────────── */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-fade-in {
+  animation: fade-in 0.25s ease both;
+}
+.animate-pulse-soft {
+  animation: pulse-soft 2s ease-in-out infinite;
+}
+
+/* Global smooth transitions for nav links */
+a, button { transition: color 0.15s, background 0.15s, border-color 0.15s, opacity 0.15s; }

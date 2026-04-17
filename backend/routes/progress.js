@@ -1,6 +1,7 @@
 import express from "express";
 import { query, computeStreak, computeSubjectProgress, computeTotalPoints } from "../db/index.js";
 import { authenticate } from "../middleware/auth.js";
+import { checkAndAwardBadges } from "../services/badges.js";
 
 const router = express.Router();
 
@@ -72,6 +73,8 @@ router.post("/log", authenticate, async (req, res) => {
       `SELECT minutes FROM study_logs WHERE student_id=$1 AND log_date=$2`,
       [req.user.id, today]
     );
+    // Fire badge checks async (don't block response)
+    checkAndAwardBadges(req.user.id).catch(() => {});
     res.json({ message: "Study logged", totalToday: rows[0]?.minutes || 0 });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -89,6 +92,8 @@ router.post("/complete", authenticate, async (req, res) => {
        VALUES ($1, $2) ON CONFLICT DO NOTHING`,
       [req.user.id, resourceId]
     );
+    // Fire badge checks async
+    checkAndAwardBadges(req.user.id).catch(() => {});
     const { rows } = await query(
       `SELECT resource_id FROM completed_resources WHERE student_id=$1`,
       [req.user.id]
